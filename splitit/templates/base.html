@@ -7,6 +7,8 @@
     <h1> My site </h1>
     <a href="{% url 'home' %}"> Home </a>
     {% if user.is_authenticated %}
+        <a href="{% url 'secret' %}"> Secret </a>
+        <a href="{% url 'secret2' %}"> Secret2 </a>
         <a href="{% url 'password_change' %}"> Change password </a>
         <a href="{% url 'logout' %}"> Log out </a>
         <strong> You are logged as {{ user.username }} </strong>
