@@ -1,4 +1,5 @@
 {% load static %}
+{% load tags %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,11 +20,9 @@
     }
   </style>
 
-    {% if title %}
-        <title>Django project - {{ title }}</title>
-    {% else %}
-        <title>Django project Split iT</title>
-    {% endif %}
+    
+      <title>Django project Split iT</title>
+    
 </head>
 <body>
     <header class="site-header">
@@ -36,19 +35,19 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
-              <a class="nav-item nav-link" href="{% url 'blog-home' %}">Home</a>
-              <a class="nav-item nav-link" href="{% url 'blog-about' %}">Promotions</a>
-              <a class="nav-item nav-link" href="{% url 'blog-about' %}">About</a>
+              <a class="nav-item nav-link" href="{% url 'blog-home' %}"><b>Home</b></a>
+              <a class="nav-item nav-link" href="{% url 'promotion-home' %}"><b>Promotions</b></a>
+              <a class="nav-item nav-link" href="{% url 'blog-about' %}"><b>About</b></a>
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
               {% if user.is_authenticated %}
-                <a class="nav-item nav-link" href="{% url 'post-create' %}">New Post</a>
-                <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
-                <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+                <!-- <a class="nav-item nav-link" href="{% url 'post-create' %}">New Post</a> -->
+                <a class="nav-item nav-link" href="{% url 'profile' %}"><b>Profile</b></a>
+                <a class="nav-item nav-link" href="{% url 'logout' %}"><b>Logout</b></a>
               {% else %}
-                <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                <a class="nav-item nav-link" href="{% url 'login' %}"><b>Login</b></a>
+                <a class="nav-item nav-link" href="{% url 'register' %}"><b>Register</b></a>
               {% endif %}
             </div>
           </div>
@@ -83,9 +82,10 @@
           <div class="content-section">
             <h3>Best offers</h3>
               <ul class="list-group">
-                <li class="list-group-item list-group-item-light">Off1</li>
-                <li class="list-group-item list-group-item-light">off2</li>
-                <li class="list-group-item list-group-item-light">off3</li>
+               {% best_promos as m%}
+                {% for promotion in m %}
+                <li class="list-group-item list-group-item-light">{{promotion.name}}</li>
+                {% endfor %}         
               </ul>
             </p>
           </div>
