@@ -1,5 +1,8 @@
 {% extends "blog/base.html" %}
 {% block content %}
+    <div class="jumbotron jumbotron-fluid">
+      <h4 class="display-4 text-center">Newest splits</h4>
+    </div>
     {% for post in posts %}
         <article class="media content-section">
           <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">

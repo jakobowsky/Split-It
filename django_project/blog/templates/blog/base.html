@@ -12,23 +12,32 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
 
+    <style type="text/css">
+    .jumbotron {
+      padding-bottom: 5%;
+      padding-top: 5%;
+    }
+  </style>
+
     {% if title %}
-        <title>Django Blog - {{ title }}</title>
+        <title>Django project - {{ title }}</title>
     {% else %}
-        <title>Django Blog</title>
+        <title>Django project Split iT</title>
     {% endif %}
 </head>
 <body>
     <header class="site-header">
-      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <div class="container">
-          <a class="navbar-brand mr-4" href="{% url 'blog-home' %}">Django Blog</a>
+          <!-- <a class="navbar-brand mr-4" href="{% url 'blog-home' %}">Split It!</a>  -->
+          <div class="navbar-brand mr-4"> Split It! </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{% url 'blog-home' %}">Home</a>
+              <a class="nav-item nav-link" href="{% url 'blog-about' %}">Promotions</a>
               <a class="nav-item nav-link" href="{% url 'blog-about' %}">About</a>
             </div>
             <!-- Navbar Right Side -->
@@ -59,14 +68,33 @@
           {% block content %}{% endblock %}
         </div>
         <div class="col-md-4">
+          {% if user.is_authenticated %}
+            <div class="content-section">
+              <h3>Hello {{ user }}! </h3>
+              <p class='text-muted'>Your panel.
+                <ul class="list-group">
+                  <li class="list-group-item list-group-item-light">Your splits</li>
+                  <li class="list-group-item list-group-item-light">Smth1</li>
+                  <li class="list-group-item list-group-item-light">Smth2</li>
+                </ul>
+              </p>
+            </div>
+          {% endif %}
           <div class="content-section">
-            <h3>Our Sidebar</h3>
-            <p class='text-muted'>You can put any information here you'd like.
+            <h3>Best offers</h3>
               <ul class="list-group">
-                <li class="list-group-item list-group-item-light">Latest Posts</li>
-                <li class="list-group-item list-group-item-light">Announcements</li>
-                <li class="list-group-item list-group-item-light">Calendars</li>
-                <li class="list-group-item list-group-item-light">etc</li>
+                <li class="list-group-item list-group-item-light">Off1</li>
+                <li class="list-group-item list-group-item-light">off2</li>
+                <li class="list-group-item list-group-item-light">off3</li>
+              </ul>
+            </p>
+          </div>
+          <div class="content-section">
+            <h3>Best Brands</h3>
+              <ul class="list-group">
+                <li class="list-group-item list-group-item-light">Brand1</li>
+                <li class="list-group-item list-group-item-light">Brand2</li>
+                <li class="list-group-item list-group-item-light">Brand3</li>
               </ul>
             </p>
           </div>
