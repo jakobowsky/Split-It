@@ -9,7 +9,7 @@ from django.views.generic import (
     DeleteView
 )
 from .models import Post
-from promotion.models import Promotion
+# from promotion.models import Promotion
 
 # def home(request):
 #     context = {
@@ -25,12 +25,12 @@ class PostListView(ListView):
     ordering = ['-date_posted']
     paginate_by = 5
     
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['promotions'] = Promotion.objects.all()[:5]
-        return context
+    # def get_context_data(self, **kwargs):
+    #     # Call the base implementation first to get a context
+    #     context = super().get_context_data(**kwargs)
+    #     # Add in a QuerySet of all the books
+    #     context['promotions'] = Promotion.objects.all()[:5]
+    #     return context
     
 
 

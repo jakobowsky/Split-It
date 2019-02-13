@@ -82,9 +82,11 @@
           <div class="content-section">
             <h3>Best offers</h3>
               <ul class="list-group">
-               {% best_promos as m%}
-                {% for promotion in m %}
-                <li class="list-group-item list-group-item-light">{{promotion.name}}</li>
+               {% best_promos as best_promos%}
+                {% for promotion in best_promos %}
+                <li class="list-group-item list-group-item-light">
+                {{promotion.name}}
+                </li>
                 {% endfor %}         
               </ul>
             </p>
@@ -92,9 +94,12 @@
           <div class="content-section">
             <h3>Best Brands</h3>
               <ul class="list-group">
-                <li class="list-group-item list-group-item-light">Brand1</li>
-                <li class="list-group-item list-group-item-light">Brand2</li>
-                <li class="list-group-item list-group-item-light">Brand3</li>
+                {% best_brands as best_brands%}
+                {% for brand in best_brands %}
+                <li class="list-group-item list-group-item-light">
+                  <a class="mr-2" href="{% url 'promotion-brand' brand.name %}">{{brand.name}}</a>
+                </li>
+                {% endfor %}         
               </ul>
             </p>
           </div>
