@@ -72,7 +72,9 @@
               <h3>Hello {{ user }}! </h3>
               <p class='text-muted'>Your panel.
                 <ul class="list-group">
-                  <li class="list-group-item list-group-item-light">Your splits</li>
+                  <li class="list-group-item list-group-item-light">
+                  <a class="mr-2" href="{% url 'user-posts' user.username %}">Your splits</a>
+                  </li>
                   <li class="list-group-item list-group-item-light">Smth1</li>
                   <li class="list-group-item list-group-item-light">Smth2</li>
                 </ul>

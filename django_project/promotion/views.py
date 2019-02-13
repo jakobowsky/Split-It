@@ -28,3 +28,8 @@ class PromotionBrandListView(ListView):
     def get_queryset(self):
         brand = get_object_or_404(Brand, name=self.kwargs.get('brand'))
         return Promotion.objects.filter(brand=brand).order_by('-date_posted')
+
+
+class PromotionDetailView(DetailView):
+    model = Promotion
+    template_name = 'promotion/promotion_detail.html'

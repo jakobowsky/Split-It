@@ -13,8 +13,19 @@
           </div>
         {% endif %}
       </div>
-      <h2 class="article-title">{{ object.title }}</h2>
-      <p class="article-content">{{ object.content }}</p>
+      <div class="row mb-2">
+        <h2 class="article-title">{{ object.title }}</h2>
+        <p class="article-content">{{ object.content }}</p>
+        <div class="col md-6">
+          <strong class="d-inline-block mb-2 text-primary">Promotion:</strong>
+          <p class="article-title"> {{ object.promotion.name }}</p>
+          <p class="article-content">{{ object.promotion.description }}</p>
+        </div>
+        <div class="col md-6">
+          <div class="d-flex justify-content-center mb-3">
+          <img class="img" src="{{ object.promotion.image.url }}">
+        </div>
+      </div>
     </div>
   </article>
 {% endblock content %}
