@@ -12,7 +12,8 @@
               <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
             </div>
             <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
-            <p><a class="article-content" href="promotion/detail">{{ post.promotion.name }}</a></p>
+            <p><a class="article-content" href="{% url 'promotion-detail' post.promotion.pk %}">{{ post.promotion.name }}</a></p>
+            
             <p class="article-content">{{ post.content |truncatechars:160}}</p>
           </div>
         </article>

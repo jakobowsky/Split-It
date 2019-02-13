@@ -18,7 +18,9 @@
         <p class="article-content">{{ object.content }}</p>
         <div class="col md-6">
           <strong class="d-inline-block mb-2 text-primary">Promotion:</strong>
-          <p class="article-title"> {{ object.promotion.name }}</p>
+          <p class="article-title">
+            <a href="{% url 'promotion-detail' object.promotion.pk %}">{{ object.promotion.name }}</a>      
+          </p>
           <p class="article-content">{{ object.promotion.description }}</p>
         </div>
         <div class="col md-6">

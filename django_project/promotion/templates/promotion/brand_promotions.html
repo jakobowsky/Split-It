@@ -11,7 +11,7 @@
               <a class="mr-2" href="{% url 'promotion-brand' promotion.brand.name %}">{{ promotion.brand.name }}</a> 
               <small class="text-muted">{{ promotion.date_posted|date:"F d, Y" }}</small>
             </div>
-            <h2><a class="article-title" href="detail/id">{{ promotion.name }}</a></h2>
+            <h2><a class="article-title" href="{% url 'promotion-detail' promotion.pk %}">{{ promotion.name }}</a></h2>
             
         </article>
     {% endfor %}

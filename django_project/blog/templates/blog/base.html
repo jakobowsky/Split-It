@@ -75,8 +75,7 @@
                   <li class="list-group-item list-group-item-light">
                   <a class="mr-2" href="{% url 'user-posts' user.username %}">Your splits</a>
                   </li>
-                  <li class="list-group-item list-group-item-light">Smth1</li>
-                  <li class="list-group-item list-group-item-light">Smth2</li>
+                  <li class="list-group-item list-group-item-light">Joined</li>
                 </ul>
               </p>
             </div>
@@ -87,7 +86,7 @@
                {% best_promos as best_promos%}
                 {% for promotion in best_promos %}
                 <li class="list-group-item list-group-item-light">
-                {{promotion.name}}
+                <a class="mr-2" href="{% url 'promotion-detail' promotion.pk %}">{{promotion.name}}</a>  
                 </li>
                 {% endfor %}         
               </ul>
