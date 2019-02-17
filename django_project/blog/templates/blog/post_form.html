@@ -1,16 +1,26 @@
 {% extends "blog/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    {{promotion}}
     <div class="content-section">
+    <legend class="border-bottom mb-4">Promotion info</legend>
+     <div class="row">
+        <div class="col-lg-6 mb-4">    
+            <img class="img-fluid rounded mb-3 mb-md-0" src="{{promotion.image.url}}" alt="promotion photo">
+        </div>
+        <div class="col-lg-6 mb-4">
+          <h3>{{promotion.name}}</h3>
+          <p>{{promotion.description}}</p>
+
+        </div>
+      </div>
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Blog Post</legend>
+                <legend class="border-bottom mb-4">Your Split info</legend>
                 {{ form|crispy }}
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Post</button>
+                <button class="btn btn-primary" type="submit">Post</button>
             </div>
         </form>
     </div>

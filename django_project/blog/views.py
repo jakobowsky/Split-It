@@ -1,16 +1,19 @@
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.views.generic import (
     ListView,
     DetailView,
     CreateView,
+    FormView,
     UpdateView,
     DeleteView
 )
 
 from promotion.models import Promotion
-from .models import Post
+from .models import Post, Comment
+from .forms import CommentForm
 # from promotion.models import Promotion
 
 # def home(request):
@@ -26,14 +29,13 @@ class PostListView(ListView):
     context_object_name = 'posts'
     ordering = ['-date_posted']
     paginate_by = 5
-    
+
     # def get_context_data(self, **kwargs):
     #     # Call the base implementation first to get a context
     #     context = super().get_context_data(**kwargs)
     #     # Add in a QuerySet of all the books
     #     context['promotions'] = Promotion.objects.all()[:5]
     #     return context
-    
 
 
 class UserPostListView(ListView):
@@ -47,14 +49,45 @@ class UserPostListView(ListView):
         return Post.objects.filter(author=user).order_by('-date_posted')
 
 
+# class PostDetailView(FormView, DetailView):
+#     model = Post
+#     form_class = CommentForm
+
+#     def form_valid(self, form):
+#         form.instance.author = self.request.user
+#         form.instance.post = get_object_or_404(Post, pk=self.kwargs['pk'])
+#         return super().form_valid(form)
+
+#     def get_success_url(self):
+#         return reverse_lazy('post-detail', kwargs={'pk': self.kwargs['pk']})
+
+
 class PostDetailView(DetailView):
     model = Post
+
+    def get_context_data(self, **kwargs):
+        context = super(PostDetailView, self).get_context_data(**kwargs)
+        context['form'] = CommentForm
+        return context
+
+
+class MyFormView(FormView):
+    form_class = CommentForm
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('post-detail', kwargs={'pk': self.kwargs['pk']})
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['title', 'content', ]
-    
+
     ''' Very important and useful 
     # def get_initial(self):
     #     initial = super().get_initial()
@@ -67,22 +100,31 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(PostCreateView, self).get_context_data(*args, **kwargs)
-        context['promotion'] = get_object_or_404(Promotion, pk=self.kwargs['promotion_id'])
+        context['promotion'] = get_object_or_404(
+            Promotion, pk=self.kwargs['promotion_id'])
         return context
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        form.instance.promotion = get_object_or_404(Promotion, pk=self.kwargs['promotion_id'])
+        form.instance.promotion = get_object_or_404(
+            Promotion, pk=self.kwargs['promotion_id'])
         return super().form_valid(form)
-    
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     fields = ['title', 'content']
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(PostUpdateView, self).get_context_data(*args, **kwargs)
+        context['promotion'] = get_object_or_404(
+            Promotion, pk=self.kwargs['promotion_id'])
+        return context
+
     def form_valid(self, form):
         form.instance.author = self.request.user
+        form.instance.promotion = get_object_or_404(
+            Promotion, pk=self.kwargs['promotion_id'])
         return super().form_valid(form)
 
     def test_func(self):
