@@ -145,5 +145,21 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    #    success_url = '/'
+
+    def get_success_url(self):
+        comment = get_object_or_404(
+            Comment, pk=self.kwargs['pk'])
+        return reverse_lazy('post-detail', kwargs={'pk': comment.post.id})
+
+    def test_func(self):
+        comment = self.get_object()
+        if self.request.user == comment.author:
+            return True
+        return False
+
+
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
