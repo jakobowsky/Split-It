@@ -30,6 +30,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
+    
     content = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(

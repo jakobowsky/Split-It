@@ -46,7 +46,17 @@
           </div>
         </div>
        </div>
-    {% endfor %} 
+    {% endfor %}
+    <style>
+    .col-form-label {
+      display: none;
+    }
+
+    .form-control {
+      height: 70px;
+    }
+
+    </style>
     <form method="POST", action= {% url 'my_form_view_url' object.id%}>
       {% csrf_token %}
       <fieldset class="form-group">
