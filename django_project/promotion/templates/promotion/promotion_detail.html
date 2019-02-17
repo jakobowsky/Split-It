@@ -6,14 +6,14 @@
         <div class="article-metadata">
             <a class="mr-2" href="{% url 'promotion-brand' object.brand.name %}">{{ object.brand }}</a>
             <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
-            {% if user.is_authenticated %}
-            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="#">Create split</a>
-            {% endif %}
             <div class="row mb-2">
                 <h2 class="article-title">{{ object.name }}</h2>
                 <p class="article-content">{{ object.description }}</p>
             </div>
-        </div>   
+        </div>
+        {% if user.is_authenticated %}
+        <a class="btn btn-secondary btn-sm "href="{% url 'post-create' promotion_id=object.id %}">Create Split</a>
+        {% endif %}
     </div>
   </article>
 {% endblock content %}

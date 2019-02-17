@@ -1,6 +1,7 @@
 {% extends "blog/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+    {{promotion}}
     <div class="content-section">
         <form method="POST">
             {% csrf_token %}

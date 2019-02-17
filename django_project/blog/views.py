@@ -8,6 +8,8 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
+
+from promotion.models import Promotion
 from .models import Post
 # from promotion.models import Promotion
 
@@ -51,11 +53,28 @@ class PostDetailView(DetailView):
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'content']
+    fields = ['title', 'content', ]
+    
+    ''' Very important and useful 
+    # def get_initial(self):
+    #     initial = super().get_initial()
+    #     # cpf - it's the name of the field on your current form
+    #     # self.args will be filled from URL. I'd suggest to use named parameters
+    #     # so you can access e.g. self.kwargs['cpf_initial']
+    #     initial['promotion'] = self.kwargs['promotion_id'] 
+    #     return initial
+    '''
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(PostCreateView, self).get_context_data(*args, **kwargs)
+        context['promotion'] = get_object_or_404(Promotion, pk=self.kwargs['promotion_id'])
+        return context
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        form.instance.promotion = get_object_or_404(Promotion, pk=self.kwargs['promotion_id'])
         return super().form_valid(form)
+    
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
