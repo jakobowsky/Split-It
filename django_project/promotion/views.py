@@ -19,6 +19,13 @@ class PromotionListView(ListView):
     paginate_by = 5
 
 
+class BrandListView(ListView):
+    model = Brand
+    template_name = 'promotion/brands.html'
+    context_object_name = 'brands'
+    paginate_by = 5
+
+
 class PromotionBrandListView(ListView):
     model = Promotion
     template_name = 'promotion/brand_promotions.html'
@@ -33,3 +40,5 @@ class PromotionBrandListView(ListView):
 class PromotionDetailView(DetailView):
     model = Promotion
     template_name = 'promotion/promotion_detail.html'
+
+
