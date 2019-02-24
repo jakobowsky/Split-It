@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -10,6 +11,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
+from django.views.generic.list import MultipleObjectMixin
 
 from promotion.models import Promotion
 from .models import Post, Comment
@@ -62,12 +64,17 @@ class UserPostListView(ListView):
 #         return reverse_lazy('post-detail', kwargs={'pk': self.kwargs['pk']})
 
 
-class PostDetailView(DetailView):
+class PostDetailView(DetailView, MultipleObjectMixin):
     model = Post
+    paginate_by = 5
 
     def get_context_data(self, **kwargs):
-        context = super(PostDetailView, self).get_context_data(**kwargs)
+        object_list = Comment.objects.filter(post=self.get_object())
+        context = super(PostDetailView, self).get_context_data(
+            object_list=object_list, **kwargs
+        )
         context['form'] = CommentForm
+
         return context
 
 
