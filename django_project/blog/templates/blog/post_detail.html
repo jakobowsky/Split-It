@@ -31,6 +31,16 @@
       </div>
     </div>
     <div class="article-metadata">
+      {{post.members.users.count}} / {{post.user_limit}} users
+      {% if object.author != user and object.user_limit > object.members.users.all.count and user not in object.members.users.all %}
+        <a href="{% url 'join-split' object.id %}"> <i class="fa fa-reply"></i> Join!</a>
+      {% endif %}
+      {% if user != object.author and user in object.members.users.all %}
+      <a href="{% url 'quit-split' object.id %}"> <i class="fa fa-reply"></i> Quit!</a>
+      {% endif %}
+      {% for promotion_user in object.members.users.all  %}
+      {{promotion_user}}
+      {% endfor %}
     </div>
     <h2 class="article-title">Comments</h2>
     {% for comment in object_list  %}  <!-- object_list is comments-->

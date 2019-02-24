@@ -1,8 +1,9 @@
 from django.core.paginator import Paginator
-from django.shortcuts import render, get_object_or_404
-from django.urls import reverse_lazy
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.views import View
 from django.views.generic import (
     ListView,
     DetailView,
@@ -176,5 +177,30 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
+
+def joinsplit(request, pk):
+    if request.method == 'GET':
+        post = Post.objects.get(pk=pk)
+        postmembers = PostMembers.objects.get(post=post)
+        number_of_users = postmembers.users.count()
+        if post.user_limit > number_of_users:
+            postmembers.users.add(request.user)
+            postmembers.save()
+        return redirect('post-detail', pk=pk)
+
+def quitsplit(request, pk):
+    if request.method == 'GET':
+        post = Post.objects.get(pk=pk)
+        postmembers = PostMembers.objects.get(post=post)
+        number_of_users = postmembers.users.count()    
+        postmembers.users.remove(request.user)
+        postmembers.save()
+        return redirect('post-detail', pk=pk)
+
+
+
+
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
+
+

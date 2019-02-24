@@ -25,8 +25,8 @@ class Post(models.Model):
     is_finished = models.BooleanField(default=False)
     
     user_limit = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(10)],
-        default=1,
+        validators=[MinValueValidator(2), MaxValueValidator(10)],
+        default=2,
     )
     
 
@@ -41,6 +41,7 @@ class PostMembers(models.Model):
     post = models.OneToOneField(
         Post,
         on_delete=models.CASCADE,
+        related_name='members'
     )
 
     users = models.ManyToManyField(
@@ -49,7 +50,7 @@ class PostMembers(models.Model):
     )
 
     def __str__(self):
-        return f'{self.post.title} {len(self.users.all())} / {self.post.user_limit + 1}'
+        return f'{self.post.title} {len(self.users.all())} / {self.post.user_limit}'
 
 
 class Comment(models.Model):
