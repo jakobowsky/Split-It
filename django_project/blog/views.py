@@ -1,3 +1,4 @@
+from django.db.models import Q, Count, F
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
@@ -26,12 +27,19 @@ from .forms import CommentForm
 #     return render(request, 'blog/home.html', context)
 
 
-class PostListView(ListView):
+class PostListView(ListView,):
     model = Post
     template_name = 'blog/home.html'  # <app>/<model>_<viewtype>.html
     context_object_name = 'posts'
     ordering = ['-date_posted']
     paginate_by = 5
+
+    # select posts which have free places
+    def get_queryset(self):
+        #query_filter =  self.kwargs.get('query_filter')
+        return Post.objects.annotate(num_users=Count('members__users')).filter(
+            user_limit__gt=F('num_users')
+        )
 
     # def get_context_data(self, **kwargs):
     #     # Call the base implementation first to get a context
@@ -40,15 +48,24 @@ class PostListView(ListView):
     #     context['promotions'] = Promotion.objects.all()[:5]
     #     return context
 
-
-class UserPostListView(ListView):
+class PostAllListView(ListView,):
     model = Post
-    template_name = 'blog/user_posts.html'  # <app>/<model>_<viewtype>.html
+    template_name = 'blog/home.html'  # <app>/<model>_<viewtype>.html
     context_object_name = 'posts'
+    ordering = ['-date_posted']
     paginate_by = 5
 
+
+
+
+class UserPostListView(ListView):
+    model=Post
+    template_name='blog/user_posts.html'  # <app>/<model>_<viewtype>.html
+    context_object_name='posts'
+    paginate_by=5
+
     def get_queryset(self):
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        user=get_object_or_404(User, username=self.kwargs.get('username'))
         return Post.objects.filter(author=user).order_by('-date_posted')
 
 
@@ -66,25 +83,26 @@ class UserPostListView(ListView):
 
 
 class PostDetailView(DetailView, MultipleObjectMixin):
-    model = Post
-    paginate_by = 5
+    model=Post
+    paginate_by=5
+
 
     def get_context_data(self, **kwargs):
-        object_list = Comment.objects.filter(post=self.get_object())
-        context = super(PostDetailView, self).get_context_data(
+        object_list=Comment.objects.filter(post=self.get_object())
+        context=super(PostDetailView, self).get_context_data(
             object_list=object_list, **kwargs
         )
-        context['form'] = CommentForm
+        context['form']=CommentForm
 
         return context
 
 
 class MyFormView(FormView):
-    form_class = CommentForm
+    form_class=CommentForm
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
-        form.instance.post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        form.instance.author=self.request.user
+        form.instance.post=get_object_or_404(Post, pk=self.kwargs['pk'])
         form.save()
         return super().form_valid(form)
 
@@ -93,114 +111,110 @@ class MyFormView(FormView):
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
-    model = Post
-    fields = ['title', 'content', 'user_limit']
+    model=Post
+    fields=['title', 'content', 'user_limit']
 
-    ''' Very important and useful 
+    ''' Very important and useful
     # def get_initial(self):
     #     initial = super().get_initial()
     #     # cpf - it's the name of the field on your current form
     #     # self.args will be filled from URL. I'd suggest to use named parameters
     #     # so you can access e.g. self.kwargs['cpf_initial']
-    #     initial['promotion'] = self.kwargs['promotion_id'] 
+    #     initial['promotion'] = self.kwargs['promotion_id']
     #     return initial
     '''
 
     def get_context_data(self, *args, **kwargs):
-        context = super(PostCreateView, self).get_context_data(*args, **kwargs)
-        context['promotion'] = get_object_or_404(
+        context=super(PostCreateView, self).get_context_data(*args, **kwargs)
+        context['promotion']=get_object_or_404(
             Promotion, pk=self.kwargs['promotion_id'])
         return context
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
-        form.instance.promotion = get_object_or_404(
+        form.instance.author=self.request.user
+        form.instance.promotion=get_object_or_404(
             Promotion, pk=self.kwargs['promotion_id'])
-        post = form.save()
-        postmembers = PostMembers(
+        post=form.save()
+        postmembers=PostMembers(
             post=post,
         )
         postmembers.save()
         postmembers.users.add(post.author)
         postmembers.save()
-        
+
         return super().form_valid(form)
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Post
-    fields = ['title', 'content']
+    model=Post
+    fields=['title', 'content']
 
     def get_context_data(self, *args, **kwargs):
-        context = super(PostUpdateView, self).get_context_data(*args, **kwargs)
-        context['promotion'] = get_object_or_404(
+        context=super(PostUpdateView, self).get_context_data(*args, **kwargs)
+        context['promotion']=get_object_or_404(
             Promotion, pk=self.kwargs['promotion_id'])
         return context
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
-        form.instance.promotion = get_object_or_404(
+        form.instance.author=self.request.user
+        form.instance.promotion=get_object_or_404(
             Promotion, pk=self.kwargs['promotion_id'])
         return super().form_valid(form)
 
     def test_func(self):
-        post = self.get_object()
+        post=self.get_object()
         if self.request.user == post.author:
             return True
         return False
 
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Post
-    success_url = '/'
+    model=Post
+    success_url='/'
 
     def test_func(self):
-        post = self.get_object()
+        post=self.get_object()
         if self.request.user == post.author:
             return True
         return False
 
 
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Comment
+    model=Comment
     #    success_url = '/'
 
     def get_success_url(self):
-        comment = get_object_or_404(
+        comment=get_object_or_404(
             Comment, pk=self.kwargs['pk'])
         return reverse_lazy('post-detail', kwargs={'pk': comment.post.id})
 
     def test_func(self):
-        comment = self.get_object()
+        comment=self.get_object()
         if self.request.user == comment.author:
             return True
         return False
 
 
-
 def joinsplit(request, pk):
     if request.method == 'GET':
-        post = Post.objects.get(pk=pk)
-        postmembers = PostMembers.objects.get(post=post)
-        number_of_users = postmembers.users.count()
+        post=Post.objects.get(pk=pk)
+        postmembers=PostMembers.objects.get(post=post)
+        number_of_users=postmembers.users.count()
         if post.user_limit > number_of_users:
             postmembers.users.add(request.user)
             postmembers.save()
         return redirect('post-detail', pk=pk)
 
+
 def quitsplit(request, pk):
     if request.method == 'GET':
-        post = Post.objects.get(pk=pk)
-        postmembers = PostMembers.objects.get(post=post)
-        number_of_users = postmembers.users.count()    
+        post=Post.objects.get(pk=pk)
+        postmembers=PostMembers.objects.get(post=post)
+        number_of_users=postmembers.users.count()
         postmembers.users.remove(request.user)
         postmembers.save()
         return redirect('post-detail', pk=pk)
 
 
-
-
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
-
-

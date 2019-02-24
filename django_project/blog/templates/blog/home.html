@@ -3,6 +3,8 @@
     <div class="jumbotron jumbotron-fluid">
       <h4 class="display-4 text-center">Newest splits</h4>
     </div>
+    <h2><a href="{% url 'blog-home-all'  %}">All Splits</a></h2>
+    <h2><a href="{% url 'blog-home'  %}">Available Splits</a></h2>
     {% for post in posts %}
         <article class="media content-section">
           <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
