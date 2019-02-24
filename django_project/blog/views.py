@@ -14,7 +14,7 @@ from django.views.generic import (
 from django.views.generic.list import MultipleObjectMixin
 
 from promotion.models import Promotion
-from .models import Post, Comment
+from .models import Post, Comment, PostMembers
 from .forms import CommentForm
 # from promotion.models import Promotion
 
@@ -93,7 +93,7 @@ class MyFormView(FormView):
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'content', ]
+    fields = ['title', 'content', 'user_limit']
 
     ''' Very important and useful 
     # def get_initial(self):
@@ -115,6 +115,14 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         form.instance.promotion = get_object_or_404(
             Promotion, pk=self.kwargs['promotion_id'])
+        post = form.save()
+        postmembers = PostMembers(
+            post=post,
+        )
+        postmembers.save()
+        postmembers.users.add(post.author)
+        postmembers.save()
+        
         return super().form_valid(form)
 
 

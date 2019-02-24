@@ -1,9 +1,11 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.urls import reverse
 
 from promotion.models import Promotion
+
 
 
 class Post(models.Model):
@@ -21,6 +23,12 @@ class Post(models.Model):
         related_name='posts',
     )
     is_finished = models.BooleanField(default=False)
+    
+    user_limit = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+        default=1,
+    )
+    
 
     def __str__(self):
         return self.title
@@ -29,8 +37,23 @@ class Post(models.Model):
         return reverse('post-detail', kwargs={'pk': self.pk})
 
 
+class PostMembers(models.Model):
+    post = models.OneToOneField(
+        Post,
+        on_delete=models.CASCADE,
+    )
+
+    users = models.ManyToManyField(
+        User,
+        related_name='posts_joined',
+    )
+
+    def __str__(self):
+        return f'{self.post.title} {len(self.users.all())} / {self.post.user_limit + 1}'
+
+
 class Comment(models.Model):
-    
+
     content = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(
