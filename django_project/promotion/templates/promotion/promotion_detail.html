@@ -17,7 +17,7 @@
     </div>
   </article>
 
-  {% for post in object.posts.all %}
+  {% for post in object_list %}
         <article class="media content-section">
           <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
           <div class="media-body">

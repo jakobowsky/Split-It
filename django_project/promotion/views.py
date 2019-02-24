@@ -7,7 +7,9 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
+from django.views.generic.list import MultipleObjectMixin
 
+from blog.models import Post
 from .models import Brand, Promotion
 
 
@@ -26,7 +28,7 @@ class BrandListView(ListView):
     paginate_by = 5
 
 
-class PromotionBrandListView(ListView):
+class PromotionBrandListView(ListView, MultipleObjectMixin):
     model = Promotion
     template_name = 'promotion/brand_promotions.html'
     context_object_name = 'promotions'
@@ -37,8 +39,15 @@ class PromotionBrandListView(ListView):
         return Promotion.objects.filter(brand=brand).order_by('-date_posted')
 
 
-class PromotionDetailView(DetailView):
+class PromotionDetailView(DetailView, MultipleObjectMixin):
     model = Promotion
     template_name = 'promotion/promotion_detail.html'
+    paginate_by = 3
 
+    def get_context_data(self, **kwargs):
+        object_list = Post.objects.filter(promotion=self.get_object())
+        context = super(PromotionDetailView, self).get_context_data(
+            object_list=object_list, **kwargs
+        )
+        return context
 
