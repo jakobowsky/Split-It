@@ -46,7 +46,7 @@
                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                   {% best_categories as best_categories%}
                   {% for category in best_categories %}
-                  <button class="dropdown-item" type="button">{{ category.name }}</button>
+                  <button class="dropdown-item" type="button"><a href="{% url 'promotion-category' category.name  %}"> {{ category.name }} </a> </button>
                   {% endfor %}
                 </div>
               </div>

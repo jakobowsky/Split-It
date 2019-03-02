@@ -10,7 +10,7 @@ from django.views.generic import (
 from django.views.generic.list import MultipleObjectMixin
 
 from blog.models import Post
-from .models import Brand, Promotion
+from .models import Brand, Promotion, Category
 
 
 class PromotionListView(ListView):
@@ -19,6 +19,17 @@ class PromotionListView(ListView):
     context_object_name = 'promotions'
     ordering = ['-date_posted']
     paginate_by = 5
+
+
+class PromotionCategoryListView(ListView):
+    model = Promotion
+    template_name = 'promotion/category_promotion.html'
+    context_object_name = 'promotions'
+    ordering = ['-date_posted']
+    paginate_by = 5
+    def get_queryset(self):
+        category = get_object_or_404(Category, name__iexact=self.kwargs.get('category'))
+        return Promotion.objects.filter(category=category).order_by('-date_posted')
 
 
 class BrandListView(ListView):
