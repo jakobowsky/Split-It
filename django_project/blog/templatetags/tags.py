@@ -1,5 +1,5 @@
 from django import template
-from promotion.models import Brand, Promotion
+from promotion.models import Brand, Promotion, Category
 register = template.Library()
 
 
@@ -23,3 +23,8 @@ def best_promos():
 @register.simple_tag
 def best_brands():
         return Brand.objects.all()[:7]
+
+
+@register.simple_tag
+def best_categories():
+        return Category.objects.all()[:7]
