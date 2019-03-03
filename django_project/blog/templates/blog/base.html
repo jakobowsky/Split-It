@@ -42,6 +42,11 @@
       color: grey !important;
     }
 
+    .textdrop {
+      color: grey !important ;
+      font-weight: bold;
+    }
+
   </style>
 
     
@@ -64,13 +69,13 @@
               <a class="nav-item nav-link" href="{% url 'brand-list' %}"><b>Brands</b></a>
               <a class="nav-item nav-link" href="{% url 'blog-about' %}"><b>About</b></a>
               <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-dark dropdown-toggle " type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Categories
                 </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <div class="dropdown-menu  bg-dark" aria-labelledby="dropdownMenu2">
                   {% best_categories as best_categories%}
                   {% for category in best_categories %}
-                  <button class="dropdown-item" type="button"><a href="{% url 'promotion-category' category.name  %}"> {{ category.name }} </a> </button>
+                  <button class="dropdown-item " type="button"><a class="textdrop " href="{% url 'promotion-category' category.name  %}"> {{ category.name }} </a> </button>
                   {% endfor %}
                 </div>
               </div>

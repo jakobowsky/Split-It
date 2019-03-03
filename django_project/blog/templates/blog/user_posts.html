@@ -3,19 +3,26 @@
     <div class="jumbotron jumbotron-fluid">
       <h4 class="textcolor display-4 text-center">Posts by {{ view.kwargs.username }} ({{ page_obj.paginator.count }})</h4>
     </div>
-    {% for post in posts %}
+  {% for post in posts %}
         <article class="media content-section posts textcolor">
           <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
-          <div class="media-body">
+          <div class="media-body ">
             <div class="article-metadata">
-              <a class="mr-2 textcolor" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+              <a class="mr-2 textcolor links" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
               <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
             </div>
-            <h2><a class="article-title textcolor" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
-            <p class="article-content textcolor">{{ post.content }}</p>
+            <h3><a class="article-title textcolor links" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h3>
+            <p><a class="article-content textcolor links" href="{% url 'promotion-detail' post.promotion.pk %}">{{ post.promotion.name }}</a></p>
+            
+            <p class="article-content">{{ post.content |truncatechars:160}}</p>
           </div>
+        <div>
+         {{post.members.users.count}} / {{post.user_limit}} users
+
+        </div>
         </article>
     {% endfor %}
+
     {% if is_paginated %}
 
       {% if page_obj.has_previous %}

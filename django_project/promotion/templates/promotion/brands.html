@@ -1,13 +1,13 @@
 {% extends "blog/base.html" %}
 {% block content %}
     <div class="jumbotron jumbotron-fluid">
-      <h4 class="display-4 text-center">Brands</h4>
+      <h4 class=" textcolor display-4 text-center">Brands</h4>
     </div>
     {% for brand in brands %}
-        <article class="media content-section">
-          <img class="rounded-circle article-img" src="{{ brand.image.url }}">
+        <article class="media content-section posts textcolor">
+          <img class="img-thumbnail img-promo" src="{{ brand.image.url }}">
           <div class="media-body">
-            <h2><a class="article-title" href="{% url 'promotion-brand' brand.name %}">{{ brand.name }}</a></h2>
+            <h2 class="text-center pt-5"><a class="article-title textcolor links" href="{% url 'promotion-brand' brand.name %}">{{ brand.name }}</a></h2>
         </article>
     {% endfor %}
     
