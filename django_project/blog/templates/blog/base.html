@@ -15,16 +15,28 @@
 
     <style type="text/css">
     .jumbotron {
-      padding-bottom: 5%;
-      padding-top: 5%;
+      padding-bottom: 2%;
+      padding-top: 2%;    
+      background: url("{% static 'blog/prism.png' %}") fixed;
+      
     }
+
+    .textcolor {
+      color: white !important;
+    }
+
+    .background-base {
+      background: url("{% static 'blog/carb2.png' %}") fixed;
+    }
+
+
   </style>
 
     
       <title>Django project Split iT</title>
     
 </head>
-<body>
+<body class ="background-base">
     <header class="site-header">
       <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <div class="container">
