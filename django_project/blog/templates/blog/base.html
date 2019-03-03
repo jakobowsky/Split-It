@@ -17,18 +17,30 @@
     .jumbotron {
       padding-bottom: 2%;
       padding-top: 2%;    
-      background: url("{% static 'blog/prism.png' %}") fixed;
+      background: url("{% static 'blog/prism.png' %}") fixed !important;
       
     }
 
     .textcolor {
-      color: white !important;
+      color: white !important ;
     }
 
     .background-base {
       background: url("{% static 'blog/carb2.png' %}") fixed;
     }
 
+    .posts {
+      background: url("{% static 'blog/mosaic.png' %}") fixed;
+    }
+
+    .img-promo {
+      width: 150px !important;
+      height: 150px !important;
+    }
+
+    .links:hover {
+      color: grey !important;
+    }
 
   </style>
 
@@ -91,37 +103,40 @@
         </div>
         <div class="col-md-4">
           {% if user.is_authenticated %}
-            <div class="content-section">
-              <h3>Hello {{ user }}! </h3>
-              <p class='text-muted'>Your panel.
+            <div class="content-section posts ">
+              <h3 class="text-center textcolor">Hello {{ user }}! </h3>
+              <p class='text-muted text-center'>Your panel.
                 <ul class="list-group">
-                  <li class="list-group-item list-group-item-light">
-                  <a class="mr-2" href="{% url 'user-posts' user.username %}">Your splits</a>
+                  <li class="list-group-item list-group-item-dark  posts border border-secondary text-center">
+                  <a class="mr-2 textcolor links" href="{% url 'user-posts' user.username %}">Your splits</a>
                   </li>
-                  <li class="list-group-item list-group-item-light">Joined</li>
+                  <li class="list-group-item list-group-item-dark posts border border-secondary text-center textcolor">Joined</li>
                 </ul>
               </p>
             </div>
           {% endif %}
-          <div class="content-section">
-            <h3>Best offers</h3>
+          <div class="content-section posts">
+            <h3 class="text-center textcolor">Best offers</h3>
               <ul class="list-group">
                {% best_promos as best_promos%}
                 {% for promotion in best_promos %}
-                <li class="list-group-item list-group-item-light">
-                <a class="mr-2" href="{% url 'promotion-detail' promotion.pk %}">{{promotion.name}}</a>  
+                <li class="list-group-item list-group-item-dark posts border border-secondary ">
+                <a class="mr-2 textcolor links" href="{% url 'promotion-detail' promotion.pk %}">
+                
+                {{promotion.name}}          
+                </a>  
                 </li>
                 {% endfor %}         
               </ul>
             </p>
           </div>
-          <div class="content-section">
-            <h3>Best Brands</h3>
+          <div class="content-section posts">
+            <h3 class="text-center textcolor">Best Brands</h3>
               <ul class="list-group">
                 {% best_brands as best_brands%}
                 {% for brand in best_brands %}
-                <li class="list-group-item list-group-item-light">
-                  <a class="mr-2" href="{% url 'promotion-brand' brand.name %}">{{brand.name}}</a>
+                <li class="list-group-item list-group-item-dark posts border border-secondary text-center">
+                  <a class="mr-2 textcolor links" href="{% url 'promotion-brand' brand.name %}">{{brand.name}}</a>
                 </li>
                 {% endfor %}         
               </ul>
