@@ -6,7 +6,7 @@
     <article class="media content-section posts2 textcolor border-dark">
       <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
       <div class="media-body">
-        <div class="article-metadata">
+        <div class="article-metadata mb-4">
           <a class="mr-2 textcolor links" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
           <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
           {% if object.author == user %}
@@ -16,44 +16,60 @@
             </div>
           {% endif %}
         </div>
-        <div class="row mb-2">
-          <h2 class="article-title textcolor">{{ object.title }}</h2>
-          <p class="article-content textcolor ">{{ object.content }}</p>
-          <div class="col md-6">
-            <strong class="d-inline-block mb-2 text-primary textcolor">Promotion:</strong>
-            <p class="article-title">
-              <a class="textcolor links" href="{% url 'promotion-detail' object.promotion.pk %}">{{ object.promotion.name }}</a>      
-            </p>
+
+        <h2 class="article-title textcolor">{{ object.title }}</h2>
+        <p class="article-content textcolor ">{{ object.content }}</p>
+
+        <article class="media content-section posts2 textcolor border-dark">
+          <img class="article-img img-thumbnail img-promo" src="{{ object.promotion.image.url }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2 textcolor links " href="{% url 'promotion-brand' object.promotion.brand.name %}">{{ object.promotion.brand.name }}</a> 
+              <small class="text-muted">{{ object.promotion.date_posted|date:"F d, Y" }}</small>
+            </div>
+            <h2><a class="article-title textcolor links" href="{% url 'promotion-detail' object.promotion.pk %}">{{ object.promotion.name }}</a></h2>
             <p class="article-content">{{ object.promotion.description }}</p>
-          </div>
-          <div class="col md-6">
-            <div class="d-flex justify-content-center mb-3">
-            <img class=" img-thumbnail img-promo" src="{{ object.promotion.image.url }}">
-          </div>
-        </div>
-      </div>
+        </article>
+        
+
       <div class="article-metadata">
-        {{post.members.users.count}} / {{post.user_limit}} users
+        <h3 class="textcolor text-center">Joined: {{post.members.users.count}} / {{post.user_limit}} users:</h3> 
+        {% for promotion_user in object.members.users.all  %}
+        <div class="textcolor text-center">
+        <img class="rounded-circle article-img" src="{{ promotion_user.profile.image.url }}">
+        <p class="textcolor">{{promotion_user}} </p>
+        </div>
+        {% endfor %}
         {% if object.author != user and object.user_limit > object.members.users.all.count and user not in object.members.users.all %}
-          <a href="{% url 'join-split' object.id %}"> <i class="fa fa-reply"></i> Join!</a>
+        <div class="form-group text-center">
+          <a href="{% url 'join-split' object.id %}">
+            <button class="btn btn-success">
+              Join!
+            </button>
+          </a>
+         </div>
         {% endif %}
         {% if user != object.author and user in object.members.users.all %}
-        <a href="{% url 'quit-split' object.id %}"> <i class="fa fa-reply"></i> Quit!</a>
+        <div class="form-group text-center">
+          <a href="{% url 'quit-split' object.id %}">
+            <button class="btn btn-danger">
+              Quit!
+            </button>
+          </a>
+         </div>
         {% endif %}
-        {% for promotion_user in object.members.users.all  %}
-        {{promotion_user}}
-        {% endfor %}
+        
       </div>
-      <h2 class="article-title">Comments</h2>
+      <h2 class="article-title textcolor">Comments</h2>
       {% for comment in object_list  %}  <!-- object_list is comments-->
         <div class="row mb-2">
           <div class="media">
             <img class="rounded-circle article-img align-self-start mr-3" src="{{comment.author.profile.image.url}}" alt="image">
             <div class="media-body">
-              <h5 class="mt-0">{{comment.author.username}}</h5>
+              <h5 class="mt-0 textcolor">{{comment.author.username}}</h5>
               <p>{{comment.content}}</p>
               {% if comment.author == user %}         
-                <a href="{% url 'comment-delete' comment.id %}"> <i class="fa fa-reply"></i> Delete</a>
+                <a href="{% url 'comment-delete' comment.id %}"> <i class="fa fa-reply"></i> Delete comment</a>
               {% endif %}
             </div>
           </div>
@@ -96,7 +112,7 @@
             <legend class="border-bottom mb-4">New Comment</legend>
             {{ form|crispy }}
         </fieldset>
-        <div class="form-group">
+        <div class="form-group text-center">
             <button class="btn btn-primary" type="submit">Post comment</button>
         </div>
       </form>
