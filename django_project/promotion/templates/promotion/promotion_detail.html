@@ -1,35 +1,44 @@
 {% extends "blog/base.html" %}
 {% block content %}
-  <article class="media content-section">
-    <img class="img" src="{{ object.brand.image.url }}">
-    <div class="media-body">
-        <div class="article-metadata">
-            <a class="mr-2" href="{% url 'promotion-brand' object.brand.name %}">{{ object.brand }}</a>
-            <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
-            <div class="row mb-2">
-                <h2 class="article-title">{{ object.name }}</h2>
-                <p class="article-content">{{ object.description }}</p>
-            </div>
-        </div>
-        {% if user.is_authenticated %}
-        <a class="btn btn-secondary btn-sm "href="{% url 'post-create' promotion_id=object.id %}">Create Split</a>
-        {% endif %}
-    </div>
-  </article>
-
-  {% for post in object_list %}
-        <article class="media content-section">
-          <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+      <div class="jumbotron">
+      <div class="text-center mb-4 ">
+          <img class="article-img img-thumbnail img-promo" src="{{ object.brand.image.url }}">
+      </div>
+      <article class="media content-section posts2 textcolor">
+          <img class="article-img img-thumbnail img-promo" src="{{ promotion.image.url }}">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+              <a class="mr-2 textcolor links " href="{% url 'promotion-brand' promotion.brand.name %}">{{ promotion.brand.name }}</a> 
+              <small class="text-muted">{{ promotion.date_posted|date:"F d, Y" }}</small>
+            </div>
+            <h2><a class="article-title textcolor links" href="{% url 'promotion-detail' promotion.pk %}">{{ promotion.name }}</a></h2>
+            <p class="article-content">{{ object.description }}</p>
+            {% if user.is_authenticated %}
+            <div class="text-right">
+            <a class="btn btn-secondary btn "href="{% url 'post-create' promotion_id=object.id %}">Create Split</a>
+            </div>
+            {% endif %}
+        </article>
+      </div>
+      
+
+  {% for post in object_list %}
+        <article class="media content-section posts textcolor">
+          <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+          <div class="media-body ">
+            <div class="article-metadata">
+              <a class="mr-2 textcolor links" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
               <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
             </div>
-            <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
-            <p><a class="article-content" href="{% url 'promotion-detail' post.promotion.pk %}">{{ post.promotion.name }}</a></p>
+            <h3><a class="article-title textcolor links" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h3>
+            <p><a class="article-content textcolor links" href="{% url 'promotion-detail' post.promotion.pk %}">{{ post.promotion.name }}</a></p>
             
             <p class="article-content">{{ post.content |truncatechars:160}}</p>
           </div>
+        <div>
+         {{post.members.users.count}} / {{post.user_limit}} users
+
+        </div>
         </article>
     {% endfor %}
     {% if is_paginated %}

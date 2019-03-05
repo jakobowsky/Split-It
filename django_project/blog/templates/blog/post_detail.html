@@ -1,102 +1,105 @@
 {% extends "blog/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-  <article class="media content-section">
-    <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
-    <div class="media-body">
+
+  <div class="jumbotron border">
+    <article class="media content-section posts2 textcolor border-dark">
+      <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2 textcolor links" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
+          <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
+          {% if object.author == user %}
+            <div>
+              <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id object.promotion.id %}">Update</a>
+              <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Delete</a>
+            </div>
+          {% endif %}
+        </div>
+        <div class="row mb-2">
+          <h2 class="article-title textcolor">{{ object.title }}</h2>
+          <p class="article-content textcolor ">{{ object.content }}</p>
+          <div class="col md-6">
+            <strong class="d-inline-block mb-2 text-primary textcolor">Promotion:</strong>
+            <p class="article-title">
+              <a class="textcolor links" href="{% url 'promotion-detail' object.promotion.pk %}">{{ object.promotion.name }}</a>      
+            </p>
+            <p class="article-content">{{ object.promotion.description }}</p>
+          </div>
+          <div class="col md-6">
+            <div class="d-flex justify-content-center mb-3">
+            <img class=" img-thumbnail img-promo" src="{{ object.promotion.image.url }}">
+          </div>
+        </div>
+      </div>
       <div class="article-metadata">
-        <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
-        <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
-        {% if object.author == user %}
-          <div>
-            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id object.promotion.id %}">Update</a>
-            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Delete</a>
-          </div>
+        {{post.members.users.count}} / {{post.user_limit}} users
+        {% if object.author != user and object.user_limit > object.members.users.all.count and user not in object.members.users.all %}
+          <a href="{% url 'join-split' object.id %}"> <i class="fa fa-reply"></i> Join!</a>
         {% endif %}
+        {% if user != object.author and user in object.members.users.all %}
+        <a href="{% url 'quit-split' object.id %}"> <i class="fa fa-reply"></i> Quit!</a>
+        {% endif %}
+        {% for promotion_user in object.members.users.all  %}
+        {{promotion_user}}
+        {% endfor %}
       </div>
-      <div class="row mb-2">
-        <h2 class="article-title">{{ object.title }}</h2>
-        <p class="article-content">{{ object.content }}</p>
-        <div class="col md-6">
-          <strong class="d-inline-block mb-2 text-primary">Promotion:</strong>
-          <p class="article-title">
-            <a href="{% url 'promotion-detail' object.promotion.pk %}">{{ object.promotion.name }}</a>      
-          </p>
-          <p class="article-content">{{ object.promotion.description }}</p>
-        </div>
-        <div class="col md-6">
-          <div class="d-flex justify-content-center mb-3">
-          <img class="img" src="{{ object.promotion.image.url }}">
-        </div>
-      </div>
-    </div>
-    <div class="article-metadata">
-      {{post.members.users.count}} / {{post.user_limit}} users
-      {% if object.author != user and object.user_limit > object.members.users.all.count and user not in object.members.users.all %}
-        <a href="{% url 'join-split' object.id %}"> <i class="fa fa-reply"></i> Join!</a>
-      {% endif %}
-      {% if user != object.author and user in object.members.users.all %}
-      <a href="{% url 'quit-split' object.id %}"> <i class="fa fa-reply"></i> Quit!</a>
-      {% endif %}
-      {% for promotion_user in object.members.users.all  %}
-      {{promotion_user}}
-      {% endfor %}
-    </div>
-    <h2 class="article-title">Comments</h2>
-    {% for comment in object_list  %}  <!-- object_list is comments-->
-      <div class="row mb-2">
-        <div class="media">
-          <img class="rounded-circle article-img align-self-start mr-3" src="{{comment.author.profile.image.url}}" alt="image">
-          <div class="media-body">
-            <h5 class="mt-0">{{comment.author.username}}</h5>
-            <p>{{comment.content}}</p>
-            {% if comment.author == user %}         
-              <a href="{% url 'comment-delete' comment.id %}"> <i class="fa fa-reply"></i> Delete</a>
-            {% endif %}
+      <h2 class="article-title">Comments</h2>
+      {% for comment in object_list  %}  <!-- object_list is comments-->
+        <div class="row mb-2">
+          <div class="media">
+            <img class="rounded-circle article-img align-self-start mr-3" src="{{comment.author.profile.image.url}}" alt="image">
+            <div class="media-body">
+              <h5 class="mt-0">{{comment.author.username}}</h5>
+              <p>{{comment.content}}</p>
+              {% if comment.author == user %}         
+                <a href="{% url 'comment-delete' comment.id %}"> <i class="fa fa-reply"></i> Delete</a>
+              {% endif %}
+            </div>
           </div>
         </div>
-       </div>
-    {% endfor %}
-    {% if is_paginated %}
-
-      {% if page_obj.has_previous %}
-        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-      {% endif %}
-
-      {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-          <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
-        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-          <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
-        {% endif %}
       {% endfor %}
+      {% if is_paginated %}
 
-      {% if page_obj.has_next %}
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% if page_obj.has_previous %}
+          <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+          <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+          <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+          <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% endif %}
+
       {% endif %}
+      <style>
+      .col-form-label {
+        display: none;
+      }
 
-    {% endif %}
-    <style>
-    .col-form-label {
-      display: none;
-    }
+      .form-control {
+        height: 70px;
+      }
 
-    .form-control {
-      height: 70px;
-    }
-
-    </style>
-    <form method="POST", action= {% url 'my_form_view_url' object.id%}>
-      {% csrf_token %}
-      <fieldset class="form-group">
-          <legend class="border-bottom mb-4">New Comment</legend>
-          {{ form|crispy }}
-      </fieldset>
-      <div class="form-group">
-          <button class="btn btn-primary" type="submit">Post comment</button>
-      </div>
-    </form>
-  </article>
+      </style>
+      <form method="POST", action= {% url 'my_form_view_url' object.id%}>
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">New Comment</legend>
+            {{ form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-primary" type="submit">Post comment</button>
+        </div>
+      </form>
+    </article>
+  </div>
 {% endblock content %}

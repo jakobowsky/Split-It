@@ -1,17 +1,20 @@
 {% extends "blog/base.html" %}
 {% block content %}
-        <div class="d-flex justify-content-center mb-3">
-        <img class="img-fluid rounded-circle img" src="{{ promotions.first.brand.image.url }}">
-        </div>
+    <div class="jumbotron jumbotron-fluid">
+      <h4 class="textcolor display-4 text-center">{{page_obj.name}}</h4>
+      <div class="d-flex justify-content-center mb-3">
+        <img class="img-fluid  img" src="{{ promotions.first.brand.image.url }}">
+    </div>
+    </div>
     {% for promotion in promotions %}
-        <article class="media content-section">
-          <img class="rounded-circle article-img" src="{{ promotion.image.url }}">
+        <article class="media content-section posts textcolor">
+          <img class="article-img img-thumbnail img-promo" src="{{ promotion.image.url }}">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="{% url 'promotion-brand' promotion.brand.name %}">{{ promotion.brand.name }}</a> 
+              <a class="mr-2 textcolor links " href="{% url 'promotion-brand' promotion.brand.name %}">{{ promotion.brand.name }}</a> 
               <small class="text-muted">{{ promotion.date_posted|date:"F d, Y" }}</small>
             </div>
-            <h2><a class="article-title" href="{% url 'promotion-detail' promotion.pk %}">{{ promotion.name }}</a></h2>
+            <h2><a class="article-title textcolor links" href="{% url 'promotion-detail' promotion.pk %}">{{ promotion.name }}</a></h2>
             
         </article>
     {% endfor %}

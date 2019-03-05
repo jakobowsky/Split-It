@@ -1,27 +1,32 @@
 {% extends "blog/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
-    <legend class="border-bottom mb-4">Promotion info</legend>
-     <div class="row">
-        <div class="col-lg-6 mb-4">    
-            <img class="img-fluid rounded mb-3 mb-md-0" src="{{promotion.image.url}}" alt="promotion photo">
-        </div>
-        <div class="col-lg-6 mb-4">
-          <h3>{{promotion.name}}</h3>
-          <p>{{promotion.description}}</p>
 
-        </div>
+<div class="jumbotron border">
+      <div class="text-center mb-4 ">
+          <img class="article-img img-thumbnail img-promo" src="{{ promotion.brand.image.url }}">
       </div>
-        <form method="POST">
+      <article class="media content-section posts2 textcolor border-secondary">
+          <img class="article-img img-thumbnail img-promo" src="{{ promotion.image.url }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2 textcolor links " href="{% url 'promotion-brand' promotion.brand.name %}">{{ promotion.brand.name }}</a> 
+              <small class="text-muted">{{ promotion.date_posted|date:"F d, Y" }}</small>
+            </div>
+            <h2><a class="article-title textcolor links" href="{% url 'promotion-detail' promotion.pk %}">{{ promotion.name }}</a></h2>
+            <p class="article-content">{{ promotion.description }}</p>
+        </article>
+
+     <form method="POST">
             {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Your Split info</legend>
+            <fieldset class="form-group textcolor">
+                <legend class="border-bottom mb-4 textcolor">Your Split info</legend>
                 {{ form|crispy }}
             </fieldset>
-            <div class="form-group">
+            <div class="form-group text-center">
                 <button class="btn btn-primary" type="submit">Post</button>
             </div>
         </form>
-    </div>
+
+      </div>
 {% endblock content %}

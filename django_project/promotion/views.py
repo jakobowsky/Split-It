@@ -31,6 +31,11 @@ class PromotionCategoryListView(ListView):
         category = get_object_or_404(Category, name__iexact=self.kwargs.get('category'))
         return Promotion.objects.filter(category=category).order_by('-date_posted')
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(PromotionCategoryListView, self).get_context_data(*args, **kwargs)
+        context['category'] = self.kwargs.get('category')
+        return context
+
 
 class BrandListView(ListView):
     model = Brand
@@ -46,7 +51,7 @@ class PromotionBrandListView(ListView, MultipleObjectMixin):
     paginate_by = 5
 
     def get_queryset(self):
-        brand = get_object_or_404(Brand, name=self.kwargs.get('brand'))
+        brand = get_object_or_404(Brand, name=self.kwargs.get('brand')) 
         return Promotion.objects.filter(brand=brand).order_by('-date_posted')
 
 
